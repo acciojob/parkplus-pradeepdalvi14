@@ -34,14 +34,14 @@ public class ReservationServiceImpl implements ReservationService {
 
             List<Spot> spotList = parkingLotOptional.get().getSpotList();
             for (Spot spot:spotList){
-                if(numberOfWheels ==4 && spot.getSpotType()==SpotType.FOUR_WHEELER && price<spot.getPricePerHour()){
+                if(numberOfWheels ==4 && (spot.getSpotType()==SpotType.FOUR_WHEELER || spot.getSpotType()==SpotType.OTHERS)  && price<spot.getPricePerHour() && spot.getOccupied()==false){
                     price = spot.getPricePerHour();
                     spotToBeReserved = spot;
-                }else if (numberOfWheels==2 &&(spot.getSpotType()==SpotType.FOUR_WHEELER || spot.getSpotType()==SpotType.TWO_WHEELER) && price<spot.getPricePerHour()){
+                }else if (numberOfWheels==2 &&(spot.getSpotType()==SpotType.FOUR_WHEELER || spot.getSpotType()==SpotType.TWO_WHEELER || spot.getSpotType()==SpotType.OTHERS) && spot.getPricePerHour()<price && spot.getOccupied()==false){
                     spotToBeReserved = spot;
                     price = spot.getPricePerHour();
                 }else{
-                    if(price<spot.getPricePerHour()){
+                    if(spot.getSpotType()==SpotType.OTHERS && price<spot.getPricePerHour()){
                         price = spot.getPricePerHour();
                         spotToBeReserved = spot;
                     }
@@ -50,9 +50,16 @@ public class ReservationServiceImpl implements ReservationService {
         }else {
             throw new Exception("Cannot make reservation");
         }
+        User u = userRepository3.findById(userId).get();
+
+        if(spotToBeReserved==null || u==null){
+            throw new Exception("Cannot make reservation");
+        }
         spotToBeReserved.setOccupied(true);
         spotRepository3.save(spotToBeReserved);
+        reservation.setNumberOfHours(timeInHours);
         reservation.setSpot(spotToBeReserved);
+        reservation.setUser(u);
         return reservationRepository3.save(reservation);
 
     }

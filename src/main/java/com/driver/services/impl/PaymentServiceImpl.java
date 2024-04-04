@@ -27,7 +27,7 @@ public class PaymentServiceImpl implements PaymentService {
         if(amountSent<bill){
             throw new InSufficientBalanceException("Insufficient Amount");
         }
-        if (mode.equals(PaymentMode.CARD) || mode.equals(PaymentMode.UPI) || mode.equals(PaymentMode.CASH) ){
+        if (mode.equals("card") || mode.equals("upi") || mode.equals("cash") ){
 
         }else{
             throw new PaymentModeException("Payment mode not detected");
