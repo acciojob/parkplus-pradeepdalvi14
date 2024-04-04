@@ -50,9 +50,14 @@ public class ReservationServiceImpl implements ReservationService {
         }else {
             throw new Exception("Cannot make reservation");
         }
-        User u = userRepository3.findById(userId).get();
-
-        if(spotToBeReserved==null || u==null){
+        User u = null;
+        Optional<User> userOptional = userRepository3.findById(userId);
+        if (userOptional.isPresent()){
+           u = userOptional.get();
+        }else {
+            throw new Exception("Cannot make reservation");
+        }
+        if(spotToBeReserved==null){
             throw new Exception("Cannot make reservation");
         }
         spotToBeReserved.setOccupied(true);
