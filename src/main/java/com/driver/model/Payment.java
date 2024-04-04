@@ -13,6 +13,7 @@ public class Payment {
     private Reservation reservation;
 
     boolean paymentCompleted;
+
     PaymentMode paymentMode;
 
     public int getId() {
